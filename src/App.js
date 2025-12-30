@@ -1,10 +1,24 @@
+import {RouterProvider} from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
 
+import SignIn from "./Components/SignIn";
+import Browse from "./Components/Browse";
 
 function App() {
+
+  const appRouter = createBrowserRouter([{
+    path : "/",
+    element : <SignIn/>,
+  },
+  {
+    path : "/browse",
+    element : <Browse/>,
+  }
+])
+
   return (
-    <div className="text-xl font-bold ">
-      <h1>hello netflix</h1>
-    </div>
+    <div><RouterProvider router= {appRouter} /></div>
+
   );
 }
 
