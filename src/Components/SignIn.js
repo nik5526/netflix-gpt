@@ -1,18 +1,33 @@
 import React from "react";
 import Header from "./Header";
 import { Netflix_Background_IMG } from "../utilities/links";
-import { useState } from "react";
+import { useState,useRef } from "react";
+import {ValidateData} from "../utilities/ValidateData";
 
 const SignIn = () => {
   // here what we are doing we are making the sign In and Sign Up page on the same page we are not using or directing to another page , we are doing it using the toggle feature .
 
   const [isSignIn, setIsSignIn] = useState(true);
 
+  const [showError,setShowError] = useState(null);
+
   const toggleButton = () => {
     {
       setIsSignIn(!isSignIn);
     }
   };
+
+//   useRef function use in place where we have to fetch the text what we are writing in the input box and it submit it to handleButton function for validation , we can use useState also in its place but it is easy to use .
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleButton = ()=>{
+        // console.log(email.current.value);
+        // console.log(password.current.value);
+
+        const message = ValidateData(email.current.value,password.current.value);
+        setShowError(message);
+  }
 
   return (
     <div className="relative w-screen h-screen ">
@@ -30,7 +45,8 @@ const SignIn = () => {
       <Header />
 
       <div className="relative z-10 flex justify-center items-center h-full">
-        <form className="w-[450px] flex flex-col bg-black/75 p-12 rounded-md text-white gap-6">
+        <form className="w-[450px] flex flex-col bg-black/75 p-12 rounded-md text-white gap-6"
+            onSubmit={(e)=>e.preventDefault()}>
           <h2 className="text-2xl font-bold">
             {isSignIn ? "Sign In" : "Sign Up"}
           </h2>
@@ -44,18 +60,22 @@ const SignIn = () => {
           )}
 
           <input
+            ref={email}
             type="text"
             placeholder="Email Address "
             className="w-full p-3 bg-black/40 rounded-md border border-gray-400"
           />
 
           <input
-            type="text"
+            ref={password}
+            type="password"
             placeholder="Password"
             className="w-full p-3 bg-black/40 rounded-md border border-gray-400"
           />
 
-          <button className="w-full p-3 bg-red-600 rounded-md font-semibold">
+          <p className="text-white text-sm">{showError}</p>
+
+          <button onClick={handleButton} className="w-full p-3 bg-red-600 rounded-md font-semibold">
             {isSignIn ? "Sign In" : "Sign Up"}
           </button>
 
