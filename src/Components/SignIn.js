@@ -3,6 +3,8 @@ import Header from "./Header";
 import { Netflix_Background_IMG } from "../utilities/links";
 import { useState,useRef } from "react";
 import {ValidateData} from "../utilities/ValidateData";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from "../utilities/firebase";
 
 const SignIn = () => {
   // here what we are doing we are making the sign In and Sign Up page on the same page we are not using or directing to another page , we are doing it using the toggle feature .
@@ -27,6 +29,38 @@ const SignIn = () => {
 
         const message = ValidateData(email.current.value,password.current.value);
         setShowError(message);
+
+        if(message) return;
+
+        if(!isSignIn){
+            //Sign Up authentication
+            createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setShowError(errorCode +". "+ errorMessage); //by adding this, if there will be any error it will show on the UI.
+                });
+        }
+        else{
+            //Sign In authentication
+            signInWithEmailAndPassword(auth, email.current.value,password.current.value )
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+                    console.log(user);
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setShowError(errorCode + ". " + errorMessage);
+                });
+        }
   }
 
   return (
