@@ -7,10 +7,10 @@ import { addUser, removeUser } from "../utilities/userSlice";
 
 const Body = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // ✅ NOW IT WORKS
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-     onAuthStateChanged(auth, (user) => {
+     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
          // User is signed in, see docs for a list of available properties
         const { uid, email, displayName } = user;
@@ -24,9 +24,12 @@ const Body = () => {
       }
     });
 
+    return () => unsubscribe(); // cleanup
   }, []);
 
-  return <Outlet />; // renders SignIn / Browse
+  return <Outlet />; // renders SignIn / Browse 
 };
 
 export default Body;
+
+

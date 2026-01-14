@@ -1,17 +1,26 @@
 import React from "react";
 import Header from "./Header";
 import { Netflix_Background_IMG } from "../utilities/links";
-import { useState,useRef } from "react";
-import {ValidateData} from "../utilities/ValidateData";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import {auth} from "../utilities/firebase";
+import { useState, useRef } from "react";
+import { ValidateData } from "../utilities/ValidateData";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utilities/firebase";
+import { updateProfile } from "firebase/auth";
+import {useDispatch} from "react-redux";
+import {addUser} from "../utilities/userSlice";
 
 const SignIn = () => {
   // here what we are doing we are making the sign In and Sign Up page on the same page we are not using or directing to another page , we are doing it using the toggle feature .
 
+
   const [isSignIn, setIsSignIn] = useState(true);
 
-  const [showError,setShowError] = useState(null);
+  const [showError, setShowError] = useState(null);
+
+  const dispatch = useDispatch();
 
   const toggleButton = () => {
     {
@@ -19,49 +28,77 @@ const SignIn = () => {
     }
   };
 
-//   useRef function use in place where we have to fetch the text what we are writing in the input box and it submit it to handleButton function for validation , we can use useState also in its place but it is easy to use .
+  //   useRef function use in place where we have to fetch the text what we are writing in the input box and it submit it to handleButton function for validation , we can use useState also in its place but it is easy to use .
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef(null);
 
-  const handleButton = ()=>{
-        // console.log(email.current.value);
-        // console.log(password.current.value);
+  const handleButton = () => {
+    // console.log(email.current.value);
+    // console.log(password.current.value);
 
-        const message = ValidateData(email.current.value,password.current.value);
-        setShowError(message);
+    const message = ValidateData(email.current.value, password.current.value);
+    setShowError(message);
 
-        if(message) return;
+    if (message) return;
 
-        if(!isSignIn){
-            //Sign Up authentication
-            createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
-                .then((userCredential) => {
-                    // Signed up 
-                    const user = userCredential.user;
-                    // ...
+    if (!isSignIn) {
+      //Sign Up authentication
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "https://example.com/jane-q-user/profile.jpg",
+          })
+            .then(() => {
+              // Profile updated!
+              //  DISPATCH TO REDUX , it will directly update the user name and details as soon as the user login, the bug was solved , before we have to relod the page to see the name and the photo icon . Here auth will come from firebase from getauth. If we write user inplace of auth then it will not update we have to relaod the page to update it.
+              const {uid,email,displayName,photoURL} = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
                 })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    setShowError(errorCode +". "+ errorMessage); //by adding this, if there will be any error it will show on the UI.
-                });
-        }
-        else{
-            //Sign In authentication
-            signInWithEmailAndPassword(auth, email.current.value,password.current.value )
-                .then((userCredential) => {
-                    // Signed in 
-                    const user = userCredential.user;
-                    console.log(user);
-                    // ...
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    setShowError(errorCode + ". " + errorMessage);
-                });
-        }
-  }
+              );
+            })
+            .catch((error) => {
+              setShowError(error.message);
+            });
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setShowError(errorCode + ". " + errorMessage); //by adding this, if there will be any error it will show on the UI.
+        });
+    } else {
+      //Sign In authentication
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setShowError(errorCode + ". " + errorMessage);
+        });
+    }
+  };
 
   return (
     <div className="relative w-screen h-screen ">
@@ -79,14 +116,17 @@ const SignIn = () => {
       <Header />
 
       <div className="relative z-10 flex justify-center items-center h-full">
-        <form className="w-[450px] flex flex-col bg-black/75 p-12 rounded-md text-white gap-6"
-            onSubmit={(e)=>e.preventDefault()}>
+        <form
+          className="w-[450px] flex flex-col bg-black/75 p-12 rounded-md text-white gap-6"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <h2 className="text-2xl font-bold">
             {isSignIn ? "Sign In" : "Sign Up"}
           </h2>
 
           {!isSignIn && (
             <input
+              ref={name}
               type="text"
               placeholder="Enter Your Name"
               className="w-full p-3 bg-black/40 rounded-md border border-gray-400"
@@ -109,7 +149,10 @@ const SignIn = () => {
 
           <p className="text-white text-sm">{showError}</p>
 
-          <button onClick={handleButton} className="w-full p-3 bg-red-600 rounded-md font-semibold">
+          <button
+            onClick={handleButton}
+            className="w-full p-3 bg-red-600 rounded-md font-semibold"
+          >
             {isSignIn ? "Sign In" : "Sign Up"}
           </button>
 
