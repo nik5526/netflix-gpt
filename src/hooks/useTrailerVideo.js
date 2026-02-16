@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {addTrailerVideo} from "../utilities/movieSlice";
 
-const useTrailerVideo = ({movieId})=>{
+const useTrailerVideo = (movieId)=>{
 
-    //we can also map the api keys using useState also but we have done it  using our store because it is in the centeral level. 
+    //we can also map the api keys using useState also but we have done it  using our store because it is in the central level. 
 
     const dispatch = useDispatch();
     

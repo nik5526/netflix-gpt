@@ -2,13 +2,19 @@ import useTrailerVideo from "../hooks/useTrailerVideo";
 import { useSelector } from "react-redux";
 
 const VideoContainer = ({ movieId }) => {
+
+  useTrailerVideo( movieId );
+  
   const trailerVideo = useSelector((store) => store.movies?.trailerVideo);
-  useTrailerVideo({ movieId });
+
+  if (!trailerVideo) return null;
+
+  console.log("Trailer video:", trailerVideo);
 
   return (
-    <div className="w-screen ">
+    <div>
       <iframe
-        className="aspect-video"
+        className="w-screen h-screen object-cover scale-125"
         src={
           "https://www.youtube.com/embed/" +
           trailerVideo?.key +
@@ -23,7 +29,6 @@ const VideoContainer = ({ movieId }) => {
         }
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
       ></iframe>
     </div>
   );
