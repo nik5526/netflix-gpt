@@ -12,3 +12,10 @@ export const API_Options = {
 };
 
 export const IMG_PosterPath = "https://image.tmdb.org/t/p/w500/";
+
+// we can use this inplace of directly putting options to the header , and map the elements in place of options .
+export const Lang_Identifier = [
+  {identifier : "en" , name : "English"},
+  {identifier : "hindi" , name : "Hindi"},
+  {identifier : "spanish" , name : "Spanish"},
+]

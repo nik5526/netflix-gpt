@@ -13,7 +13,7 @@ const MainContainer = () => {
 
   const { original_title, overview, id } = mainMovie;
   return (
-    <div className="relative w-screen h-[90vh] overflow-visible ">
+    <div className="relative w-screen h-[90vh]  ">
       
       <div className="absolute inset-0 -z-10">
         <VideoContainer movieId={id} />
