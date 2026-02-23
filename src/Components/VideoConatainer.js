@@ -9,7 +9,7 @@ const VideoContainer = ({ movieId }) => {
 
   if (!trailerVideo) return null;
 
-  console.log("Trailer video:", trailerVideo);
+
 
   return (
     <div>

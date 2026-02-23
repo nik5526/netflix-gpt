@@ -5,11 +5,11 @@ import VideoContainer from "./VideoConatainer";
 
 const MainContainer = () => {
   const movies = useSelector((store) => store.movies?.nowPlayingMovies);
-  console.log("NOW PLAYING MOVIES:", movies);
+
   if (!movies) return null;
 
   const mainMovie = movies[0];
-  console.log(movies[0]);
+
 
   const { original_title, overview, id } = mainMovie;
   return (

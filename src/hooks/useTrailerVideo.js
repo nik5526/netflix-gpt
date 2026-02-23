@@ -17,7 +17,6 @@ const useTrailerVideo = (movieId)=>{
           API_Options
         );
         const json = await data.json();
-        console.log(json);
     
         const videos = json.results;
     
@@ -25,7 +24,6 @@ const useTrailerVideo = (movieId)=>{
           (video) => video.type === "Trailer" && video.site === "YouTube"
         );
     
-        console.log(trailer);
     
         dispatch(addTrailerVideo(trailer));
       };

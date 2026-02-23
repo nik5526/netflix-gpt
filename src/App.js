@@ -5,6 +5,7 @@ import Body from "./Components/Body";
 import SignIn from "./Components/SignIn";
 import Browse from "./Components/Browse";
 
+
 const appRouter = createBrowserRouter([
   {
     path: "/",
